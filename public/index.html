@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Management</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>Task Management</h1>
+    <div class="container">
+        <!-- Form to add a task -->
+        <form id="taskForm" method="POST" action="/add">
+            <input type="text" id="task_name" name="task_name" placeholder="Enter a task" required>
+            <button type="submit">Add Task</button>
+        </form>
+
+        <!-- Task list -->
+        <div class="task-list" id="taskList"></div>
+    </div>
+
+    <script>
+        // Mock tasks data, which will be dynamically populated in the frontend
+        let tasks = [];
+
+        // Fetch tasks data when the page loads
+        window.onload = function() {
+            updateTaskList();
+        };
+
+        // Function to render the tasks on the page
+        function updateTaskList() {
+            const taskList = document.getElementById('taskList');
+            taskList.innerHTML = ''; // Clear existing tasks
+
+            tasks.forEach((task, index) => {
+                const taskElement = document.createElement('div');
+                taskElement.classList.add('task');
+                taskElement.innerHTML = `
+                    <span class="${task.completed ? 'completed' : ''}">${task.name}</span>
+                    <div>
+                        <a href="/update/${index}" style="margin-right: 10px;">
+                            ${task.completed ? 'Unmark' : 'Complete'}
+                        </a>
+                        <a href="/delete/${index}">Delete</a>
+                    </div>
+                `;
+                taskList.appendChild(taskElement);
+            });
+        }
+
+        // Handle form submission to add a new task
+        document.getElementById('taskForm').onsubmit = function(event) {
+            event.preventDefault();
+            const taskName = document.getElementById('task_name').value;
+            if (taskName) {
+                tasks.push({ name: taskName, completed: false });
+                document.getElementById('task_name').value = ''; // Clear input
+                updateTaskList(); // Update task list
+            }
+        };
+    </script>
+</body>
+</html>
